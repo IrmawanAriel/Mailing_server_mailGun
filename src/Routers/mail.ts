@@ -1,9 +1,11 @@
-import { Response, Request, Router } from "express";
+import { Router } from "express";
+import { postEmail } from "../Handlers/postEmail";
+import multer from "multer";
+
+const uploader = multer()
 
 const mailingrouter = Router();
 
-mailingrouter.get('/get', (req: Request, res: Response) => {
-    res.json({ message: 'Welcome to the API!' });
-})
+mailingrouter.post('/post', uploader.fields([{ name: 'AgreementFile', maxCount: 1 }, { name: 'AdditionalFiles', maxCount: 100 }]) , postEmail)
 
 export default mailingrouter;
