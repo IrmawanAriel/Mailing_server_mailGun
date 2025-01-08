@@ -32,3 +32,5 @@ app.listen(Port, () => {
 })
 
 app.use(MainRoute); // call the main route here
+
+export default app;
