@@ -1,14 +1,17 @@
 import { Response, Request } from "express";
+import * as dotenv from 'dotenv';
+dotenv.config();  // Env load environment variables
+
 const nodemailer = require("nodemailer");
 
 const transport = nodemailer.createTransport({
-    sevice: "gmail",
+    service: "gmail",
     host: "smtp.gmail.com",
     port: 587,
     secure: false, // true for port 465, false for other ports
     auth: {
-        user: "andrewdesh17@gmail.com",
-        pass: "llugzfihczuqpxfu",
+        user: process.env.ACCOUNT, // generated ethereal user
+        pass:   process.env.PASS, // generated ethereal password
     },
 });
 
