@@ -78,9 +78,6 @@ export const postEmail = async (req: Request, res: Response) => {
             .info span {
                 font-weight: bold;
             }
-            .message {
-                margin-top: 20px;
-            }
             </style>
             </head>
             <body>
