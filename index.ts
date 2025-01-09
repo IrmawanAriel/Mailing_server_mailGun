@@ -18,12 +18,12 @@ app.use(express.urlencoded({
     extended: false
 }));
 
-const corsOptions = {
-    origin: ['https://vantage-office.kintone.com/'], //vite 8080
-    methods: "POST" // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
+// const corsOptions = {
+//     origin: ['https://vantage-office.kintone.com/'], //vite 8080
+//     methods: "POST" // some legacy browsers (IE11, various SmartTVs) choke on 204
+// }
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 const Port = process.env.PORT || 8081;
 
