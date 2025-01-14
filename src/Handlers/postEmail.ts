@@ -36,11 +36,11 @@ export const postEmail = async (req: Request, res: Response) => {
             }));
         }
 
-        const AgreementFile = {
+        const EmbededFile = {
             // @ts-ignore
-            filename: `agreementbaru.pdf`,
+            filename: `EmbededFile.pdf`,
             // @ts-ignore
-            content: req.files.AgreementFile[0].buffer || null
+            content: req.files.EmbededFile[0].buffer || null
         }
 
         // const AdditionalFiles = {
@@ -51,7 +51,7 @@ export const postEmail = async (req: Request, res: Response) => {
         // }
 
         //@ts-ignore
-        console.log('ini attach 1 2:', AgreementFile, AdditionalFiles);
+        console.log('ini attach 1 2:', EmbededFile, AdditionalFiles);
 
         const formattedMessage = message.replace(/\n/g, '<br>'); // untuk menampilkan baris enter
 
@@ -92,7 +92,7 @@ export const postEmail = async (req: Request, res: Response) => {
             `, // html body
             attachments: [
             ...(AdditionalFiles.length > 0 ? AdditionalFiles : []),
-            ...(AgreementFile.content ? [AgreementFile] : [])
+            ...(EmbededFile.content ? [EmbededFile] : [])
             ]
         });
 

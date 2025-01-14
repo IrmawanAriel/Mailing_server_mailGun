@@ -6,6 +6,6 @@ const uploader = multer()
 
 const mailingrouter = Router();
 
-mailingrouter.post('/post', uploader.fields([{ name: 'AgreementFile', maxCount: 1 }, { name: 'AdditionalFiles', maxCount: 100 }]) , postEmail)
+mailingrouter.post('/post', uploader.fields([{ name: 'EmbededFile', maxCount: 1 }, { name: 'AdditionalFiles', maxCount: 100 }]) , postEmail)
 
 export default mailingrouter;
