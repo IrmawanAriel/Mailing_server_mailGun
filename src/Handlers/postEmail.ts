@@ -17,49 +17,32 @@ const transport = nodemailer.createTransport({
 
 export const postEmail = async (req: Request, res: Response) => {
     try {
-
         const { senders, email, subject, message } = req.body;
-
-        // let AgreementFile: { filename: string; content: Buffer }[] = [];
-        // if (req.files && 'AgreementFile' in req.files) {
-        //     AgreementFile = (req.files.AgreementFile as any[]).map((file: any) => ({
-        //         filename: `${file.originalname}`,
-        //         content: file.buffer
-        //     }));
-        // }
 
         let AdditionalFiles: { filename: string; content: any }[] = [];
         if (req.files && 'AdditionalFiles' in req.files) {
             AdditionalFiles = (req.files.AdditionalFiles as any[]).map((file: any) => ({
-                filename: `${file.originalname}`,
+                filename: file.originalname,
                 content: file.buffer
             }));
         }
 
-        const EmbededFile = {
-            // @ts-ignore
-            filename: `EmbededFile.pdf`,
-            // @ts-ignore
-            content: req.files.EmbededFile[0].buffer || null
-        }
+        const EmbededFile = req.files && 'EmbededFile' in req.files
+            ? {
+                filename: 'EmbededFile.pdf',
+                content: (req.files.EmbededFile as any[])[0]?.buffer || null
+            }
+            : { filename: '', content: null };
 
-        // const AdditionalFiles = {
-        //     // @ts-ignore
-        //     filename: `${req.files.AdditionalFiles[0].fieldname}.pdf` || null,
-        //     // @ts-ignore
-        //     content: req.files.AdditionalFiles[0].buffer || null
-        // }
-
-        //@ts-ignore
         console.log('ini attach 1 2:', EmbededFile, AdditionalFiles);
 
-        const formattedMessage = message.replace(/\n/g, '<br>'); // untuk menampilkan baris enter
+        const formattedMessage = message.replace(/\n/g, '<br>'); // Convert new lines to <br>
 
         const info = await transport.sendMail({
-            from: senders, // sender address
-            to: email, // list of receivers
-            subject: subject, // Subject line
-            text: message, // plain text body
+            from: senders,
+            to: email,
+            subject: subject,
+            text: message,
             html: `
             <html>
             <head>
@@ -89,10 +72,10 @@ export const postEmail = async (req: Request, res: Response) => {
             </div>
             </body>
             </html>
-            `, // html body
+            `,
             attachments: [
-            ...(AdditionalFiles.length > 0 ? AdditionalFiles : []),
-            ...(EmbededFile.content ? [EmbededFile] : [])
+                ...(AdditionalFiles.length > 0 ? AdditionalFiles : []),
+                ...(EmbededFile.content ? [EmbededFile] : [])
             ]
         });
 
@@ -101,11 +84,8 @@ export const postEmail = async (req: Request, res: Response) => {
             data: info
         });
 
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error sending email" });
     }
-
-
 };

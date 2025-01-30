@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 import MainRoute from './src/Routers/index';
 dotenv.config();  // Env load environment variables
-import cors from "cors";
 
 // inisialization app as an express function
 const app = express();
@@ -18,12 +17,12 @@ app.use(express.urlencoded({
     extended: false
 }));
 
-const corsOptions = {
-    origin: ['https://vantage-office.kintone.com/'], //vite 8080
-    methods: "POST" // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
+// const corsOptions = {
+//     origin: ['https://vantage-office.kintone.com/'], //vite 8080
+//     methods: "POST" // some legacy browsers (IE11, various SmartTVs) choke on 204
+// }
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 const Port = process.env.PORT || 8081;
 
