@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 import MainRoute from './src/Routers/index';
 dotenv.config();  // Env load environment variables
+import cors from "cors"; // Import cors
+
 
 // inisialization app as an express function
 const app = express();
@@ -17,12 +19,12 @@ app.use(express.urlencoded({
     extended: false
 }));
 
-// const corsOptions = {
-//     origin: ['https://vantage-office.kintone.com/'], //vite 8080
-//     methods: "POST" // some legacy browsers (IE11, various SmartTVs) choke on 204
-// }
-
-// app.use(cors(corsOptions));
+app.use(cors({
+    origin: "*", // Izinkan semua origin (ubah jika perlu)
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    allowedHeaders: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+    credentials: true
+}));
 
 const Port = process.env.PORT || 8081;
 
