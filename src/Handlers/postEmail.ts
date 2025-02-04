@@ -19,6 +19,7 @@ export const postEmail = async (req: Request, res: Response) => {
     try {
         const { senders, email, subject, message } = req.body;
 
+        console.log('ini body :', req.body);
         let AdditionalFiles: { filename: string; content: any }[] = [];
         if (req.files && 'AdditionalFiles' in req.files) {
             AdditionalFiles = (req.files.AdditionalFiles as any[]).map((file: any) => ({
