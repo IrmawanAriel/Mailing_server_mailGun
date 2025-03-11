@@ -1,12 +1,11 @@
 import { Response, Request } from "express";
 import * as dotenv from 'dotenv';
 dotenv.config();  // Env load environment variables
-
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 const transport = nodemailer.createTransport({
     service: "gmail",
-    host: "smtp.gmail.com",
+    host: "smtp.mailgun.org",
     port: 587,
     secure: false, // true for port 465, false for other ports
     auth: {
@@ -16,10 +15,12 @@ const transport = nodemailer.createTransport({
 });
 
 export const postEmail = async (req: Request, res: Response) => {
+    console.log('ini req body:', req.body);
+    
     try {
         const { senders, email, subject, message } = req.body;
 
-        console.log('ini body :', req.body);
+        console.log('ini body :',  senders, email, subject, message);
         let AdditionalFiles: { filename: string; content: any }[] = [];
         if (req.files && 'AdditionalFiles' in req.files) {
             AdditionalFiles = (req.files.AdditionalFiles as any[]).map((file: any) => ({
@@ -28,6 +29,8 @@ export const postEmail = async (req: Request, res: Response) => {
             }));
         }
 
+        console.log('new code')
+
         const EmbededFile = req.files && 'EmbededFile' in req.files
             ? {
                 filename: 'EmbededFile.pdf',
@@ -35,7 +38,7 @@ export const postEmail = async (req: Request, res: Response) => {
             }
             : { filename: '', content: null };
 
-        console.log('ini attach 1 2:', EmbededFile, AdditionalFiles);
+        // console.log('ini attach 1 2:', EmbededFile, AdditionalFiles);
 
         const formattedMessage = message.replace(/\n/g, '<br>'); // Convert new lines to <br>
 

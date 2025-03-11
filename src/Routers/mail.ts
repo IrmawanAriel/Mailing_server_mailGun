@@ -1,11 +1,14 @@
 import { Router } from "express";
 import { postEmail } from "../Handlers/postEmail";
-import multer from "multer";
 
-const uploader = multer()
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 
 const mailingrouter = Router();
 
-mailingrouter.post('/post', uploader.fields([{ name: 'EmbededFile', maxCount: 1 }, { name: 'AdditionalFiles', maxCount: 100 }]) , postEmail)
+mailingrouter.post('/post',multipartMiddleware, postEmail)
 
-export default mailingrouter;
+// mailingrouter.post('/post', postEmail)
+
+
+export default mailingrouter; 

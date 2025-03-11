@@ -1,0 +1,105 @@
+import { Response, Request } from "express";
+import * as dotenv from "dotenv";
+import * as nodemailer from "nodemailer";
+import * as formidable from "formidable";
+import * as fs from "fs";
+
+dotenv.config();
+
+const transport = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.mailgun.org",
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.ACCOUNT,
+        pass: process.env.PASS,
+    },
+});
+
+export const postEmail = async (req: Request, res: Response) => {
+    const form = new formidable.IncomingForm({ multiples: true });
+
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            console.error("Error parsing form:", err);
+            return res.status(500).json({ message: "Error parsing form" });
+        }
+
+        try {
+            const { senders, email, subject, message } = fields;
+            console.log("Parsed fields:", fields);
+            console.log("Parsed files:", files);
+
+            let attachments: { filename: string; content: Buffer }[] = [];
+
+            if (files.AdditionalFiles) {
+                const additionalFiles = Array.isArray(files.AdditionalFiles)
+                    ? files.AdditionalFiles
+                    : [files.AdditionalFiles];
+                
+                additionalFiles.forEach((file) => {
+                    const fileBuffer = fs.readFileSync(file.filepath);
+                    attachments.push({ filename: file.originalFilename || "file", content: fileBuffer });
+                });
+            }
+
+            const EmbededFile = files.EmbededFile
+                ? {
+                    filename: files.EmbededFile.originalFilename as File || "EmbededFile.pdf",
+                    content: fs.readFileSync(files.EmbededFile.filepath),
+                }
+                : null;
+
+            if (EmbededFile) attachments.push(EmbededFile);
+
+            const formattedMessage = (message as string).replace(/\n/g, "<br>");
+
+            const info = await transport.sendMail({
+                from: senders as string,
+                to: email as string,
+                subject: subject as string,
+                text: message as string,
+                html: `<html><body><div>${formattedMessage}</div></body></html>`,
+                attachments,
+            });
+
+            res.json({ message: "Email sent successfully", data: info });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error sending email" });
+        }
+    });
+};
+
+
+html: `
+            <html>
+            <head>
+            <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            .container {
+                padding: 20px;
+            }
+            .header {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            .info {
+                margin-bottom: 10px;
+            }
+            .info span {
+                font-weight: bold;
+            }
+            </style>
+            </head>
+            <body>
+            <div class="container">
+            <div class="message">${formattedMessage}</div>
+            </div>
+            </body>
+            </html>
+            `,
