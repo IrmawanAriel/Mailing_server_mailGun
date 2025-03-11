@@ -5,8 +5,8 @@ dotenv.config();  // Env load environment variables
 const nodemailer = require("nodemailer");
 
 const transport = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
+    // service: "gmail",
+    host: "smtp.mailgun.org",
     port: 587,
     secure: false, // true for port 465, false for other ports
     auth: {
@@ -17,7 +17,7 @@ const transport = nodemailer.createTransport({
 
 export const postEmail = async (req: Request, res: Response) => {
     try {
-        const { senders, email, subject, message } = req.body;
+        const { email, subject, message } = req.body;
 
         console.log('ini body :', req.body);
         let AdditionalFiles: { filename: string; content: any }[] = [];
@@ -40,7 +40,7 @@ export const postEmail = async (req: Request, res: Response) => {
         const formattedMessage = message.replace(/\n/g, '<br>'); // Convert new lines to <br>
 
         const info = await transport.sendMail({
-            from: senders,
+            from: process.env.ACCOUNT,
             to: email,
             subject: subject,
             text: message,
