@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "Server for Vantage Mailing system",
   "dependencies": {
+    "@kintone/rest-api-client": "^5.7.1",
     "@types/busboy": "^1.5.4",
     "busboy": "^1.6.0",
     "cors": "^2.8.5",

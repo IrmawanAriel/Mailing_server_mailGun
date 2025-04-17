@@ -19,12 +19,12 @@ app.use(express.urlencoded({
     extended: false
 }));
 
-app.use(cors({
-    origin: ['https://vantage-office.kintone.com', "https://vantage-office.kintone.com"], // Izinkan semua origin (ubah jika perlu)
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-    allowedHeaders: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-    credentials: true
-}));
+// app.use(cors({
+//     origin: ['https://vantage-office.kintone.com', "https://vantage-office.kintone.com"], // Izinkan semua origin (ubah jika perlu)
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+//     allowedHeaders: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+//     credentials: true
+// }));
 
 const Port = process.env.PORT || 8081;
 

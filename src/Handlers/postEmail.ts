@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import * as dotenv from 'dotenv';
+import { KintoneRestAPIClient } from "@kintone/rest-api-client";
 dotenv.config();  // Env load environment variables
 
 const nodemailer = require("nodemailer");
@@ -11,15 +12,72 @@ const transport = nodemailer.createTransport({
     secure: false, // true for port 465, false for other ports
     auth: {
         user: process.env.ACCOUNT, // generated ethereal user
-        pass:   process.env.PASS, // generated ethereal password
+        pass: process.env.PASS, // generated ethereal password
     },
 });
+
+const client = new KintoneRestAPIClient({
+    baseUrl: process.env.BASE_URL, // ganti sesuai domain kamu
+    auth: {
+        apiToken: process.env.API_TOKEN, // ganti dengan token kamu
+    },
+});
+
+export const kintoneUploader = async (req: Request): Promise<boolean> => {
+    try {
+      const {
+        email,
+        subject,
+        message,
+        Record_Number_App,
+        Application_Name,
+      } = req.body;
+      
+      const embeddedFile = req.files && 'EmbededFile' in req.files
+        ? (req.files['EmbededFile'] as any[])[0]
+        : null;
+  
+      let fileKey: string | null = null;
+  
+      if (embeddedFile && embeddedFile.buffer) {
+        const uploadResponse = await client.file.uploadFile({
+          file: {
+            name: 'EmbededFile.pdf',
+            data: embeddedFile.buffer,
+          },
+        });
+        fileKey = uploadResponse.fileKey;
+      }
+      
+      const recordPayload: any = {
+        Record_Number_App: { value: Record_Number_App },
+        Application_Name: { value: Application_Name },
+        To: { value: email },
+        Subject: { value: subject },
+        Messages: { value: message },
+      };
+      
+      if (fileKey) {
+        recordPayload.Attachment_Document = {
+          value: [{ fileKey }],
+        };
+      }
+      
+      await client.record.addRecord({
+        app: '41', // Ganti sesuai App ID kamu
+        record: recordPayload,
+      });
+  
+      return true;
+    } catch (error) {
+      console.error('Gagal upload ke Kintone:', error);
+      return false;
+    }
+  };
 
 export const postEmail = async (req: Request, res: Response) => {
     try {
         const { email, subject, message } = req.body;
-
-        console.log('ini body :', req.body);
         let AdditionalFiles: { filename: string; content: any }[] = [];
         if (req.files && 'AdditionalFiles' in req.files) {
             AdditionalFiles = (req.files.AdditionalFiles as any[]).map((file: any) => ({
@@ -38,6 +96,14 @@ export const postEmail = async (req: Request, res: Response) => {
         console.log('ini attach 1 2:', EmbededFile, AdditionalFiles);
 
         const formattedMessage = message.replace(/\n/g, '<br>'); // Convert new lines to <br>
+
+        if(EmbededFile.content) {
+            await kintoneUploader(req).then((result) => {
+                if (!result) {
+                    throw new Error('failed to upload kintone');
+                }
+            })
+        }
 
         const info = await transport.sendMail({
             from: process.env.ACCOUNT,
@@ -90,3 +156,5 @@ export const postEmail = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Error sending email" });
     }
 };
+
+
