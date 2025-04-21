@@ -17,9 +17,9 @@ const transport = nodemailer.createTransport({
 });
 
 const client = new KintoneRestAPIClient({
-    baseUrl: process.env.BASE_URL, // ganti sesuai domain kamu
+    baseUrl: process.env.BASE_URL,  
     auth: {
-        apiToken: process.env.API_TOKEN, // ganti dengan token kamu
+        apiToken: process.env.API_TOKEN, 
     },
 });
 
@@ -31,6 +31,7 @@ export const kintoneUploader = async (req: Request): Promise<boolean> => {
         message,
         Record_Number_App,
         Application_Name,
+        User
       } = req.body;
       
       const embeddedFile = req.files && 'EmbededFile' in req.files
@@ -55,6 +56,13 @@ export const kintoneUploader = async (req: Request): Promise<boolean> => {
         To: { value: email },
         Subject: { value: subject },
         Messages: { value: message },
+        User_Send: { 
+          value: [
+            {
+              code : User
+            }
+          ] 
+        },
       };
       
       if (fileKey) {
@@ -64,13 +72,13 @@ export const kintoneUploader = async (req: Request): Promise<boolean> => {
       }
       
       await client.record.addRecord({
-        app: '41', // Ganti sesuai App ID kamu
+        app: '41', 
         record: recordPayload,
       });
   
       return true;
     } catch (error) {
-      console.error('Gagal upload ke Kintone:', error);
+      console.error('Gagal upload ke Kintone: ', error);
       return false;
     }
   };
