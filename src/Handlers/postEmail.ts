@@ -31,7 +31,8 @@ export const kintoneUploader = async (req: Request): Promise<boolean> => {
         message,
         Record_Number_App,
         Application_Name,
-        User
+        User,
+        Title
       } = req.body;
       
       const embeddedFile = req.files && 'EmbededFile' in req.files
@@ -85,7 +86,8 @@ export const kintoneUploader = async (req: Request): Promise<boolean> => {
 
 export const postEmail = async (req: Request, res: Response) => {
     try {
-        const { email, subject, message } = req.body;
+        const { email, subject, message, Title } = req.body;
+        console.log('ini body:', req.body);
         let AdditionalFiles: { filename: string; content: any }[] = [];
         if (req.files && 'AdditionalFiles' in req.files) {
             AdditionalFiles = (req.files.AdditionalFiles as any[]).map((file: any) => ({
@@ -112,6 +114,10 @@ export const postEmail = async (req: Request, res: Response) => {
                 }
             })
         }
+
+        /**
+         * overwwrite file name with fieldCode FileName, FileName get from params
+         */
 
         const info = await transport.sendMail({
             from: process.env.ACCOUNT,
@@ -149,8 +155,8 @@ export const postEmail = async (req: Request, res: Response) => {
             </html>
             `,
             attachments: [
-                ...(AdditionalFiles.length > 0 ? AdditionalFiles : []),
-                ...(EmbededFile.content ? [EmbededFile] : [])
+                ...(AdditionalFiles.length > 0 ? AdditionalFiles : [])
+                // ...(EmbededFile.content ? [EmbededFile] : [])
             ]
         });
 
