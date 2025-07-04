@@ -1,4 +1,4 @@
-# Vantage_Mailing_server_MailGun
+# vantage_mailing_server
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.aqi.co.id/ariel.irmawan/vantage_mailing_server_mailgun.git
+git remote add origin https://gitlab.aqi.co.id/aqi-kintone/services/vantage/vantage_mailing_server.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.aqi.co.id/ariel.irmawan/vantage_mailing_server_mailgun/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.aqi.co.id/aqi-kintone/services/vantage/vantage_mailing_server/-/settings/integrations)
 
 ## Collaborate with your team
 
