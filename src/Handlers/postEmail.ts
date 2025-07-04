@@ -116,7 +116,7 @@ export const postEmail = async (req: Request, res: Response) => {
         }
 
         /**
-         * overwwrite file name with fieldCode FileName, FileName get from params
+         * overwrite file name with fieldCode FileName, FileName get from params
          */
 
         const info = await transport.sendMail({
