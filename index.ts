@@ -26,12 +26,13 @@ app.use(cors({
     credentials: true
 }));
 
-const Port = process.env.PORT || 8081;
+const Port = Number(process.env.PORT) || 8081;
 
-app.listen(Port, () => {
+app.use(MainRoute); // call the main route here
+
+app.listen(Port, '0.0.0.0', () => {
     console.log(`Server is running on ${Port}`);
 })
 
-app.use(MainRoute); // call the main route here
 
 export default app;
