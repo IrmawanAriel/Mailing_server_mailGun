@@ -85,6 +85,7 @@ export const kintoneUploader = async (req: Request): Promise<boolean> => {
   };
 
 export const postEmail = async (req: Request, res: Response) => {
+  console.log('ini req :', req);
     try {
         const { email, subject, message, Title } = req.body;
         console.log('ini body:', req.body);
@@ -166,7 +167,7 @@ export const postEmail = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         res.status(500).json({ message: "Error sending email" });
     }
 };
