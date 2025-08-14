@@ -62,7 +62,7 @@ export const kintoneUploader = async (req: Request): Promise<boolean> => {
     for (const file of additionalFiles) {
       const uploadResponse = await client.file.uploadFile({
         file: {
-          name: `${file.originalname}.pdf`,
+          name: `${file.originalname}`,
           data: file.buffer,
         },
       });
