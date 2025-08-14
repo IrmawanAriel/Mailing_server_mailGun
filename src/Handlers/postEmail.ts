@@ -51,7 +51,7 @@ export const kintoneUploader = async (req: Request): Promise<boolean> => {
     if (embeddedFile?.buffer) {
       const uploadResponse = await client.file.uploadFile({
         file: {
-          name: `${embeddedFile.originalname}.pdf` || `${File_Name}.pdf`,
+          name: `${Application_Name}.pdf`,
           data: embeddedFile.buffer,
         },
       });
